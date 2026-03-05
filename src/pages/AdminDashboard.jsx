@@ -42,7 +42,7 @@ export default function AdminDashboard() {
     ]).then(([s, h, st]) => {
       setStats(s.data)
       setHeatmap(h.data)
-      setStudents(st.data.slice(0, 8))
+      setStudents(st.data)
     }).finally(() => setLoading(false))
   }, [])
 
@@ -165,19 +165,22 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Student list */}
+        {/* Student list — all students */}
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-white">Recent Students</h2>
+            <h2 className="font-semibold text-white">All Students</h2>
+            <span className="text-xs text-slate-500">{students.length} students</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-slate-500 border-b border-slate-700">
                   <th className="text-left py-2 px-3">Name</th>
+                  <th className="text-left py-2 px-3">Roll No</th>
                   <th className="text-left py-2 px-3">Dept</th>
                   <th className="text-right py-2 px-3">CGPA</th>
                   <th className="text-right py-2 px-3">Skills</th>
+                  <th className="text-right py-2 px-3">Applied</th>
                   <th className="text-right py-2 px-3">Status</th>
                 </tr>
               </thead>
@@ -186,18 +189,26 @@ export default function AdminDashboard() {
                   <tr key={i} className="text-slate-300 hover:bg-slate-800/30 transition-colors">
                     <td className="py-2.5 px-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-xs text-white font-bold">
+                        <div className="w-7 h-7 rounded-full gradient-bg flex items-center justify-center text-xs text-white font-bold flex-shrink-0">
                           {s.name?.charAt(0)}
                         </div>
                         <span className="text-white font-medium">{s.name}</span>
                       </div>
                     </td>
-                    <td className="py-2.5 px-3">{s.department || '—'}</td>
-                    <td className="py-2.5 px-3 text-right">{s.cgpa?.toFixed(2) || '—'}</td>
+                    <td className="py-2.5 px-3 text-slate-400 text-xs">{s.roll_number || '—'}</td>
+                    <td className="py-2.5 px-3">
+                      <span className="text-xs px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-300">{s.department || '—'}</span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right font-medium">{s.cgpa?.toFixed(2) || '—'}</td>
                     <td className="py-2.5 px-3 text-right">{s.skills_count || 0}</td>
+                    <td className="py-2.5 px-3 text-right">{s.applications_count || 0}</td>
                     <td className="py-2.5 px-3 text-right">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium
-                        ${s.placement_status === 'placed' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-700 text-slate-400'}`}>
+                        ${s.placement_status === 'placed' ? 'bg-emerald-500/20 text-emerald-300' :
+                          s.placement_status === 'selected' ? 'bg-green-500/20 text-green-300' :
+                          s.placement_status === 'interview' ? 'bg-yellow-500/20 text-yellow-300' :
+                          s.placement_status === 'shortlisted' ? 'bg-blue-500/20 text-blue-300' :
+                          'bg-slate-700 text-slate-400'}`}>
                         {s.placement_status || 'unplaced'}
                       </span>
                     </td>

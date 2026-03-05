@@ -28,7 +28,10 @@ function JobCard({ job }) {
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1">
           <h3 className="font-semibold text-white group-hover:text-brand-300 transition-colors">{job.title}</h3>
-          <div className="flex items-center gap-3 mt-1.5 text-sm text-slate-400">
+          {job.company_name && (
+            <p className="text-sm font-medium text-indigo-400 mt-0.5">{job.company_name}</p>
+          )}
+          <div className="flex items-center gap-3 mt-1 text-sm text-slate-400">
             {job.location && (
               <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>
             )}
