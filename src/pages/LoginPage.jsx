@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Brain, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import PrepPulseLogo from '../../components/shared/Logo'
 import toast from 'react-hot-toast'
 import api from '../utils/api'
 import useAuthStore from '../store/authStore'
@@ -40,7 +41,7 @@ export default function LoginPage() {
             <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
               <Brain className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">PrepPulse <span className="text-brand-400">AI</span></span>
+            <span className="text-xl font-bold text-white">PrepPulse</span>
           </Link>
           <h1 className="text-3xl font-bold text-white">Welcome back</h1>
           <p className="text-slate-400 mt-2">Sign in to your account</p>

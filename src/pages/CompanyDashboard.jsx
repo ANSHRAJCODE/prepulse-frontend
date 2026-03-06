@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { LayoutDashboard, Briefcase, Plus, Users, X, Loader2, ChevronDown, ChevronUp, Star } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Plus, Users, X, Loader2, ChevronDown, ChevronUp, Star, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
 import Layout from '../components/shared/Layout'
 import api from '../utils/api'
 import toast from 'react-hot-toast'
@@ -13,8 +12,15 @@ const navItems = [
 const SKILLS_LIST = ['Python', 'Java', 'JavaScript', 'React', 'Node.js', 'SQL', 'MongoDB', 'FastAPI', 'Django', 'Spring Boot', 'Docker', 'AWS']
 const BRANCHES = ['CSE', 'IT', 'ECE', 'ECSC', 'EEE', 'ME', 'CE', 'AIDS', 'AIML']
 
-function PostJobModal({ onClose, onSuccess }) {
-  const [form, setForm] = useState({
+function JobModal({ job, onClose, onSuccess }) {
+  const isEdit = !!job
+  const [form, setForm] = useState(job ? {
+    title: job.title, description: job.description || '',
+    role_type: job.role_type, required_skills: job.required_skills || [],
+    preferred_skills: job.preferred_skills || [], min_cgpa: job.min_cgpa,
+    allowed_branches: job.allowed_branches || [],
+    package_lpa: job.package_lpa || '', location: job.location || ''
+  } : {
     title: '', description: '', role_type: 'full_time',
     required_skills: [], preferred_skills: [], min_cgpa: 6.0,
     allowed_branches: [], package_lpa: '', location: ''
@@ -25,15 +31,19 @@ function PostJobModal({ onClose, onSuccess }) {
   const submit = async () => {
     setSaving(true)
     try {
-      await api.post('/jobs/', { ...form, package_lpa: parseFloat(form.package_lpa) || null, min_cgpa: parseFloat(form.min_cgpa) })
-      toast.success('Job posted successfully!')
+      const payload = { ...form, package_lpa: parseFloat(form.package_lpa) || null, min_cgpa: parseFloat(form.min_cgpa) }
+      if (isEdit) {
+        await api.put(`/jobs/${job.id}`, payload)
+        toast.success('Job updated!')
+      } else {
+        await api.post('/jobs/', payload)
+        toast.success('Job posted!')
+      }
       onSuccess()
       onClose()
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Failed to post job')
-    } finally {
-      setSaving(false)
-    }
+      toast.error(err.response?.data?.detail || 'Failed')
+    } finally { setSaving(false) }
   }
 
   const toggleBranch = (b) => setForm(f => ({
@@ -42,10 +52,9 @@ function PostJobModal({ onClose, onSuccess }) {
       : [...f.allowed_branches, b]
   }))
 
-  const addReqSkill = (s) => {
-    if (s && !form.required_skills.includes(s)) {
+  const addSkill = (s) => {
+    if (s && !form.required_skills.includes(s))
       setForm(f => ({ ...f, required_skills: [...f.required_skills, s] }))
-    }
     setNewSkill('')
   }
 
@@ -53,10 +62,9 @@ function PostJobModal({ onClose, onSuccess }) {
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
       <div className="glass-card w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-white">Post a New Job</h2>
+          <h2 className="text-lg font-semibold text-white">{isEdit ? 'Edit Job' : 'Post a New Job'}</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
         </div>
-
         <div className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -88,13 +96,11 @@ function PostJobModal({ onClose, onSuccess }) {
                 value={form.min_cgpa} onChange={e => setForm({ ...form, min_cgpa: e.target.value })} />
             </div>
           </div>
-
           <div>
             <label className="block text-sm text-slate-400 mb-1.5">Job Description</label>
             <textarea className="input-field min-h-[80px] resize-none" placeholder="Describe the role..."
               value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
           </div>
-
           <div>
             <label className="block text-sm text-slate-400 mb-2">Required Skills</label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -107,16 +113,15 @@ function PostJobModal({ onClose, onSuccess }) {
             <div className="flex gap-2">
               <input className="input-field flex-1 text-sm" placeholder="Add skill..."
                 value={newSkill} onChange={e => setNewSkill(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addReqSkill(newSkill))} />
+                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addSkill(newSkill))} />
             </div>
             <div className="flex flex-wrap gap-1.5 mt-2">
               {SKILLS_LIST.filter(s => !form.required_skills.includes(s)).map(s => (
-                <button key={s} onClick={() => addReqSkill(s)}
+                <button key={s} onClick={() => addSkill(s)}
                   className="text-xs px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700">+ {s}</button>
               ))}
             </div>
           </div>
-
           <div>
             <label className="block text-sm text-slate-400 mb-2">Eligible Branches</label>
             <div className="flex flex-wrap gap-2">
@@ -132,11 +137,10 @@ function PostJobModal({ onClose, onSuccess }) {
             </div>
           </div>
         </div>
-
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-700">
           <button onClick={onClose} className="btn-secondary">Cancel</button>
           <button onClick={submit} disabled={!form.title || saving} className="btn-primary">
-            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Posting...</> : <><Plus className="w-4 h-4" /> Post Job</>}
+            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : <><Plus className="w-4 h-4" /> {isEdit ? 'Save Changes' : 'Post Job'}</>}
           </button>
         </div>
       </div>
@@ -147,6 +151,7 @@ function PostJobModal({ onClose, onSuccess }) {
 export default function CompanyDashboard() {
   const [jobs, setJobs] = useState([])
   const [showModal, setShowModal] = useState(false)
+  const [editJob, setEditJob] = useState(null)
   const [expandedJob, setExpandedJob] = useState(null)
   const [ranked, setRanked] = useState({})
   const [loading, setLoading] = useState(true)
@@ -166,6 +171,23 @@ export default function CompanyDashboard() {
     }
   }
 
+  const deleteJob = async (job) => {
+    if (!confirm(`Delete "${job.title}"? This cannot be undone.`)) return
+    try {
+      await api.delete(`/jobs/${job.id}`)
+      toast.success('Job deleted')
+      loadJobs()
+    } catch { toast.error('Failed to delete') }
+  }
+
+  const toggleJob = async (job) => {
+    try {
+      await api.patch(`/jobs/${job.id}/toggle`)
+      toast.success(job.is_active ? 'Job closed' : 'Job reopened')
+      loadJobs()
+    } catch { toast.error('Failed to update') }
+  }
+
   return (
     <Layout navItems={navItems}>
       <div className="max-w-5xl mx-auto space-y-6">
@@ -179,7 +201,6 @@ export default function CompanyDashboard() {
           </button>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {[
             { label: 'Active Postings', value: jobs.filter(j => j.is_active).length, icon: Briefcase },
@@ -195,7 +216,6 @@ export default function CompanyDashboard() {
           ))}
         </div>
 
-        {/* Jobs list */}
         <div className="space-y-3">
           <h2 className="font-semibold text-white">Your Job Postings</h2>
           {loading ? <div className="text-center py-10"><Loader2 className="w-6 h-6 animate-spin text-brand-500 mx-auto" /></div>
@@ -218,14 +238,32 @@ export default function CompanyDashboard() {
                       {(job.required_skills || []).slice(0, 4).map((s, i) => <span key={i} className="skill-tag">{s}</span>)}
                     </div>
                   </div>
-                  <button onClick={() => loadCandidates(job.id)}
-                    className="flex items-center gap-2 btn-secondary text-sm whitespace-nowrap">
-                    <Users className="w-4 h-4" /> Candidates
-                    {expandedJob === job.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Edit */}
+                    <button onClick={() => setEditJob(job)}
+                      className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Edit">
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    {/* Toggle active/closed */}
+                    <button onClick={() => toggleJob(job)}
+                      className={`p-2 rounded-lg transition-colors ${job.is_active ? 'text-emerald-400 hover:bg-emerald-500/10' : 'text-slate-400 hover:bg-slate-700'}`}
+                      title={job.is_active ? 'Close job' : 'Reopen job'}>
+                      {job.is_active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
+                    </button>
+                    {/* Delete */}
+                    <button onClick={() => deleteJob(job)}
+                      className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors" title="Delete">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    {/* Candidates */}
+                    <button onClick={() => loadCandidates(job.id)}
+                      className="flex items-center gap-2 btn-secondary text-sm whitespace-nowrap">
+                      <Users className="w-4 h-4" /> Candidates
+                      {expandedJob === job.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Ranked candidates */}
                 {expandedJob === job.id && (
                   <div className="border-t border-slate-700 p-5">
                     <h4 className="text-sm font-medium text-slate-300 mb-3">
@@ -251,7 +289,6 @@ export default function CompanyDashboard() {
                                 {c.overall_eligible ? 'Eligible' : 'Ineligible'}
                               </p>
                             </div>
-                            {/* Status dropdown — only show if student has applied */}
                             {c.application_id && (
                               <select
                                 defaultValue={c.application_status || 'applied'}
@@ -259,12 +296,9 @@ export default function CompanyDashboard() {
                                   try {
                                     await api.patch(`/applications/${c.application_id}/status`, { status: e.target.value })
                                     toast.success(`${c.student_name} marked as ${e.target.value}`)
-                                  } catch {
-                                    toast.error('Failed to update status')
-                                  }
+                                  } catch { toast.error('Failed to update status') }
                                 }}
-                                className="text-xs rounded-lg px-2 py-1.5 border border-slate-600 bg-slate-900 text-slate-300 cursor-pointer focus:outline-none focus:border-indigo-500"
-                              >
+                                className="text-xs rounded-lg px-2 py-1.5 border border-slate-600 bg-slate-900 text-slate-300 cursor-pointer focus:outline-none focus:border-indigo-500">
                                 <option value="applied">Applied</option>
                                 <option value="shortlisted">Shortlisted</option>
                                 <option value="interview">Interview</option>
@@ -284,7 +318,8 @@ export default function CompanyDashboard() {
         </div>
       </div>
 
-      {showModal && <PostJobModal onClose={() => setShowModal(false)} onSuccess={loadJobs} />}
+      {showModal && <JobModal onClose={() => setShowModal(false)} onSuccess={loadJobs} />}
+      {editJob && <JobModal job={editJob} onClose={() => setEditJob(null)} onSuccess={() => { loadJobs(); setEditJob(null) }} />}
     </Layout>
   )
 }

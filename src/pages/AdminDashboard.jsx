@@ -33,6 +33,8 @@ export default function AdminDashboard() {
   const [heatmap, setHeatmap] = useState([])
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [modal, setModal] = useState(null) // {title, students[]}
+
 
   useEffect(() => {
     Promise.all([
@@ -49,6 +51,51 @@ export default function AdminDashboard() {
   if (loading) return (
     <Layout navItems={navItems}>
       <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-brand-500" /></div>
+
+        {/* Student detail modal */}
+        {modal && (
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setModal(null)}>
+            <div className="glass-card w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-white">{modal.title} ({modal.list.length})</h2>
+                <button onClick={() => setModal(null)} className="text-slate-400 hover:text-white">✕</button>
+              </div>
+              {modal.list.length === 0 ? (
+                <p className="text-slate-500 text-sm">No students found.</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-slate-500 border-b border-slate-700">
+                      <th className="text-left py-2 px-3">Name</th>
+                      <th className="text-left py-2 px-3">Dept</th>
+                      <th className="text-right py-2 px-3">CGPA</th>
+                      <th className="text-right py-2 px-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {modal.list.map((s, i) => (
+                      <tr key={i} className="text-slate-300">
+                        <td className="py-2 px-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full gradient-bg flex items-center justify-center text-xs text-white font-bold">{s.name?.charAt(0)}</div>
+                            <span className="text-white font-medium">{s.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-2 px-3">{s.department}</td>
+                        <td className="py-2 px-3 text-right">{s.cgpa?.toFixed(2)}</td>
+                        <td className="py-2 px-3 text-right">
+                          <span className={`text-xs px-2 py-1 rounded-full ${s.placement_status === 'placed' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-700 text-slate-400'}`}>
+                            {s.placement_status || 'unplaced'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
     </Layout>
   )
 
@@ -65,19 +112,24 @@ export default function AdminDashboard() {
         {/* Overview stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
-            { label: 'Total Students', value: overview.total_students, icon: Users, color: 'text-brand-400', bg: 'bg-brand-500/10' },
-            { label: 'Placed', value: overview.placed_students, icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            { label: 'Placement %', value: `${overview.placement_rate}%`, icon: BarChart3, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-            { label: 'Active Jobs', value: overview.active_jobs, icon: Briefcase, color: 'text-violet-400', bg: 'bg-violet-500/10' },
-            { label: 'Applications', value: overview.total_applications, icon: LayoutDashboard, color: 'text-pulse-400', bg: 'bg-pulse-500/10' },
-            { label: 'Companies', value: overview.total_companies, icon: Building2, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+            { label: 'Total Students', value: overview.total_students, icon: Users, color: 'text-brand-400', bg: 'bg-brand-500/10', filter: null },
+            { label: 'Placed', value: overview.placed_students, icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10', filter: 'placed' },
+            { label: 'Placement %', value: `${overview.placement_rate}%`, icon: BarChart3, color: 'text-yellow-400', bg: 'bg-yellow-500/10', filter: null },
+            { label: 'Active Jobs', value: overview.active_jobs, icon: Briefcase, color: 'text-violet-400', bg: 'bg-violet-500/10', filter: null },
+            { label: 'Applications', value: overview.total_applications, icon: LayoutDashboard, color: 'text-pulse-400', bg: 'bg-pulse-500/10', filter: 'applied' },
+            { label: 'Companies', value: overview.total_companies, icon: Building2, color: 'text-cyan-400', bg: 'bg-cyan-500/10', filter: null },
           ].map((s, i) => (
-            <div key={i} className="stat-card col-span-1">
+            <div key={i}
+              className={`stat-card col-span-1 ${s.filter ? 'cursor-pointer hover:border-slate-500 transition-all' : ''}`}
+              onClick={() => {
+                if (s.filter === 'placed') setModal({ title: 'Placed Students', list: students.filter(st => st.placement_status === 'placed') })
+                else if (s.filter === 'applied') setModal({ title: 'All Students with Applications', list: students.filter(st => st.applications_count > 0) })
+              }}>
               <div className={`${s.bg} ${s.color} p-2 rounded-xl flex-shrink-0`}>
                 <s.icon className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xs text-slate-500">{s.label}</p>
+                <p className="text-xs text-slate-500">{s.label}{s.filter && ' ↗'}</p>
                 <p className="text-lg font-bold text-white">{s.value ?? 0}</p>
               </div>
             </div>
@@ -219,6 +271,51 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+        {/* Student detail modal */}
+        {modal && (
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={() => setModal(null)}>
+            <div className="glass-card w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-white">{modal.title} ({modal.list.length})</h2>
+                <button onClick={() => setModal(null)} className="text-slate-400 hover:text-white">✕</button>
+              </div>
+              {modal.list.length === 0 ? (
+                <p className="text-slate-500 text-sm">No students found.</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-slate-500 border-b border-slate-700">
+                      <th className="text-left py-2 px-3">Name</th>
+                      <th className="text-left py-2 px-3">Dept</th>
+                      <th className="text-right py-2 px-3">CGPA</th>
+                      <th className="text-right py-2 px-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {modal.list.map((s, i) => (
+                      <tr key={i} className="text-slate-300">
+                        <td className="py-2 px-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full gradient-bg flex items-center justify-center text-xs text-white font-bold">{s.name?.charAt(0)}</div>
+                            <span className="text-white font-medium">{s.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-2 px-3">{s.department}</td>
+                        <td className="py-2 px-3 text-right">{s.cgpa?.toFixed(2)}</td>
+                        <td className="py-2 px-3 text-right">
+                          <span className={`text-xs px-2 py-1 rounded-full ${s.placement_status === 'placed' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-700 text-slate-400'}`}>
+                            {s.placement_status || 'unplaced'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
     </Layout>
   )
 }
