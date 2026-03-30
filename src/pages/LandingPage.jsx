@@ -43,13 +43,6 @@ export default function LandingPage() {
 
         <div className="max-w-4xl mx-auto text-center relative">
 
-          {/* Version tag — clean, human, no AI buzzwords */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-10 border"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--border)', backgroundColor: 'var(--bg-hover)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-            Campus Placement Management System &nbsp;·&nbsp; v1.0
-          </div>
-
           {/* Headline — professional, direct */}
           <h1 className="text-5xl md:text-6xl font-black leading-[1.1] mb-7" style={{ color: 'var(--text-primary)' }}>
             From Skill Gaps to<br />
