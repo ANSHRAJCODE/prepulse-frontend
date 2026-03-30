@@ -176,7 +176,7 @@ export default function LandingPage() {
               <PrepPulseLogo size={22} />
               <span className="font-semibold text-sm" style={{ color: 'var(--text-secondary)' }}>PrepPulse</span>
               <span className="text-xs px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20 ml-1">
-                SE Lab Project
+                Software Engineering Project
               </span>
             </div>
 
