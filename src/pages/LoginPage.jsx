@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Loader2, Brain } from 'lucide-react'
+import PPLogo from '../components/PPLogo'
 import toast from 'react-hot-toast'
 import api from '../utils/api'
 import useAuthStore from '../store/authStore'
@@ -37,10 +38,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-              <Brain className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-white">PrepPulse</span>
+            <PPLogo size={36} theme="dark" />
           </Link>
           <h1 className="text-3xl font-bold text-white">Welcome back</h1>
           <p className="text-slate-400 mt-2">Sign in to your account</p>
@@ -50,26 +48,14 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
-              <input
-                type="email"
-                placeholder="you@college.edu"
-                className="input-field"
-                value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })}
-                required
-              />
+              <input type="email" placeholder="you@college.edu" className="input-field"
+                value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <div className="relative">
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  className="input-field pr-12"
-                  value={form.password}
-                  onChange={e => setForm({ ...form, password: e.target.value })}
-                  required
-                />
+                <input type={showPass ? 'text' : 'password'} placeholder="••••••••" className="input-field pr-12"
+                  value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
                 <button type="button" onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -81,14 +67,13 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Demo accounts */}
           <div className="mt-6 pt-5 border-t border-slate-700">
             <p className="text-xs text-slate-500 mb-3 text-center">Demo Credentials</p>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { role: 'Student', email: 'student@demo.com', pass: 'demo123' },
                 { role: 'Admin', email: 'admin@demo.com', pass: 'demo123' },
-                { role: 'Company', email: 'company@demo.com', pass: 'demo123' },
+                { role: 'Company', email: 'tech@demo.com', pass: 'demo123' },
               ].map(d => (
                 <button key={d.role} onClick={() => setForm({ email: d.email, password: d.pass })}
                   className="text-xs py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors border border-slate-700">
