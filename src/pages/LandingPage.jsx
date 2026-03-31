@@ -124,12 +124,12 @@ export default function LandingPage() {
   const isDark = theme === 'dark'
 
   const FEATURES = [
-    { icon: '⚡', bg: 'rgba(45,91,227,.1)', c: '#2D5BE3', t: 'Intelligent Match Engine', d: 'Weighted algorithm combining CGPA, skills, branch, and certifications to produce a precise compatibility score for every student–job pair.' },
-    { icon: '🧠', bg: 'rgba(139,92,246,.1)', c: '#7C3AED', t: 'Local AI Roadmaps', d: 'When a student falls short, the system generates a 3-step personalised learning plan using Ollama — no external API, no cost, no data leaks.' },
-    { icon: '📊', bg: 'rgba(16,185,129,.1)', c: '#059669', t: 'Placement Command Center', d: 'Department-wise readiness heatmaps, pipeline charts, and student drill-downs give placement officers real intelligence — not just numbers.' },
-    { icon: '🏢', bg: 'rgba(245,158,11,.1)', c: '#B45309', t: 'Company Recruiter Portal', d: 'Companies post jobs with skill criteria. The system auto-ranks students. Recruiters update candidate status and manage their entire pipeline.' },
-    { icon: '🎯', bg: 'rgba(236,72,153,.1)', c: '#BE185D', t: 'Skill Gap Analysis', d: 'Side-by-side view of what a student has vs what a company needs. Missing skills highlighted. Match percentage calculated in real time.' },
-    { icon: '🏆', bg: 'rgba(6,182,212,.1)', c: '#0E7490', t: 'Student Leaderboard', d: 'Department-wise ranking by placement readiness score. Motivates students and helps admins identify who needs intervention before deadlines.' },
+    { icon: '1', bg: 'rgba(45,91,227,.1)', c: '#2D5BE3', t: 'Intelligent Match Engine', d: 'Weighted algorithm combining CGPA, skills, branch, and certifications to produce a precise compatibility score for every student–job pair.' },
+    { icon: '2', bg: 'rgba(139,92,246,.1)', c: '#7C3AED', t: 'Local AI Roadmaps', d: 'When a student falls short, the system generates a 3-step personalised learning plan using Ollama — no external API, no cost, no data leaks.' },
+    { icon: '3', bg: 'rgba(16,185,129,.1)', c: '#059669', t: 'Placement Command Center', d: 'Department-wise readiness heatmaps, pipeline charts, and student drill-downs give placement officers real intelligence — not just numbers.' },
+    { icon: '4', bg: 'rgba(245,158,11,.1)', c: '#B45309', t: 'Company Recruiter Portal', d: 'Companies post jobs with skill criteria. The system auto-ranks students. Recruiters update candidate status and manage their entire pipeline.' },
+    { icon: '5', bg: 'rgba(236,72,153,.1)', c: '#BE185D', t: 'Skill Gap Analysis', d: 'Side-by-side view of what a student has vs what a company needs. Missing skills highlighted. Match percentage calculated in real time.' },
+    { icon: '6', bg: 'rgba(6,182,212,.1)', c: '#0E7490', t: 'Student Leaderboard', d: 'Department-wise ranking by placement readiness score. Motivates students and helps admins identify who needs intervention before deadlines.' },
   ]
 
   const STEPS = [
@@ -140,9 +140,9 @@ export default function LandingPage() {
   ]
 
   const ROLES = [
-    { role: 'Student', c: '#2D5BE3', cbg: 'rgba(45,91,227,.1)', icon: '🎓', items: ['Skill gap analysis vs live jobs', 'AI-generated learning roadmap', 'Match score for every opening', 'Application tracking dashboard', 'Placement status in real time'], cta: 'Register as student', link: '/register' },
-    { role: 'Admin', c: '#1A7A4A', cbg: 'rgba(26,122,74,.1)', icon: '📋', items: ['Batch placement analytics', 'Department readiness heatmap', 'All students with drill-down', 'Application pipeline charts', 'Export placement reports'], cta: 'Admin access', link: '/login' },
-    { role: 'Company', c: '#A05A1A', cbg: 'rgba(160,90,26,.1)', icon: '🏢', items: ['Post jobs with skill criteria', 'Auto-ranked candidate list', 'Status update per candidate', 'Edit, close, delete postings', 'Shortlist and interview tracking'], cta: 'Register as recruiter', link: '/register' },
+    { role: 'Student', c: '#2D5BE3', cbg: 'rgba(45,91,227,.1)', icon: '1', items: ['Skill gap analysis vs live jobs', 'AI-generated learning roadmap', 'Match score for every opening', 'Application tracking dashboard', 'Placement status in real time'], cta: 'Register as student', link: '/register' },
+    { role: 'Admin', c: '#1A7A4A', cbg: 'rgba(26,122,74,.1)', icon: '2', items: ['Batch placement analytics', 'Department readiness heatmap', 'All students with drill-down', 'Application pipeline charts', 'Export placement reports'], cta: 'Admin access', link: '/login' },
+    { role: 'Company', c: '#A05A1A', cbg: 'rgba(160,90,26,.1)', icon: '3', items: ['Post jobs with skill criteria', 'Auto-ranked candidate list', 'Status update per candidate', 'Edit, close, delete postings', 'Shortlist and interview tracking'], cta: 'Register as recruiter', link: '/register' },
   ]
 
   const DEPTS = [
@@ -231,12 +231,6 @@ export default function LandingPage() {
         <div style={{ position:'relative',zIndex:2,maxWidth:1160,width:'100%',padding:'80px 52px 100px',display:'grid',gridTemplateColumns:'1fr 480px',gap:80,alignItems:'center' }} className="hero-grid">
           {/* Left */}
           <div>
-            <Reveal>
-              <div style={{ display:'inline-flex',alignItems:'center',gap:8,fontSize:11,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',color:'var(--accent)',background:'rgba(var(--accent-rgb),.08)',border:'1px solid rgba(var(--accent-rgb),.18)',padding:'5px 14px',borderRadius:100,marginBottom:28 }}>
-                <span style={{ width:5,height:5,borderRadius:'50%',background:'var(--accent)',flexShrink:0,animation:'blink 2s ease-in-out infinite',display:'inline-block' }} />
-                Campus Placement Intelligence · v2.0
-              </div>
-            </Reveal>
             <Reveal delay={0.07}>
               <h1 style={{ fontFamily:"'Instrument Serif',serif",fontSize:'clamp(46px,5.5vw,74px)',fontWeight:400,lineHeight:1.04,letterSpacing:'-1.5px',color:'var(--text)',marginBottom:22 }}>
                 From Skill Gaps<br />to <em style={{ fontStyle:'italic',color:'var(--accent)' }}>Placement</em><br />Offers.
@@ -306,11 +300,8 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="float" style={{ position:'absolute',top:-14,right:0,background:'var(--card)',border:'1px solid var(--border)',borderRadius:9,padding:'8px 12px',fontSize:11,fontWeight:600,color:'var(--green)',whiteSpace:'nowrap',boxShadow:'0 4px 20px rgba(0,0,0,.08)' }}>
-              ✓ 87% Match Found
-            </div>
             <div className="float2" style={{ position:'absolute',bottom:32,left:-20,background:'var(--card)',border:'1px solid var(--border)',borderRadius:9,padding:'8px 12px',fontSize:11,fontWeight:600,color:'var(--accent)',whiteSpace:'nowrap',boxShadow:'0 4px 20px rgba(0,0,0,.08)' }}>
-              🧠 AI Roadmap Generated
+               AI Roadmap Generated
             </div>
           </div>
         </div>

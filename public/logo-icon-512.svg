@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-l" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EEF2FF"/>
+      <stop offset="100%" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="left-l" x1="0" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2D5BE3"/>
+      <stop offset="100%" stop-color="#1A3FA8"/>
+    </linearGradient>
+    <linearGradient id="right-l" x1="256" y1="512" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A3FA8" stop-opacity=".75"/>
+      <stop offset="100%" stop-color="#4A7AFF"/>
+    </linearGradient>
+    <filter id="book-shadow" x="-5%" y="-5%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#1A3FA8" flood-opacity=".22"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle (light) -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg-l)"/>
+
+  <!-- Book group -->
+  <g filter="url(#book-shadow)">
+    <!-- Book shadow/depth -->
+    <rect x="80" y="152" width="352" height="240" rx="20" fill="#1A3FA8" opacity=".2"/>
+
+    <!-- Left page -->
+    <path d="M96 172 C96 160.95 104.95 152 116 152 L244 152 L244 388 L116 388 C104.95 388 96 379.05 96 368 Z" fill="url(#left-l)"/>
+
+    <!-- Right page -->
+    <path d="M268 152 L396 152 C407.05 152 416 160.95 416 172 L416 368 C416 379.05 407.05 388 396 388 L268 388 Z" fill="url(#right-l)"/>
+
+    <!-- Spine -->
+    <rect x="244" y="152" width="24" height="236" fill="#0E2870"/>
+
+    <!-- Left page lines -->
+    <line x1="120" y1="210" x2="232" y2="210" stroke="rgba(255,255,255,0.45)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="120" y1="252" x2="232" y2="252" stroke="rgba(255,255,255,0.45)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="120" y1="294" x2="200" y2="294" stroke="rgba(255,255,255,0.35)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="120" y1="336" x2="215" y2="336" stroke="rgba(255,255,255,0.25)" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Right page lines -->
+    <line x1="280" y1="210" x2="394" y2="210" stroke="rgba(255,255,255,0.45)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="280" y1="252" x2="394" y2="252" stroke="rgba(255,255,255,0.45)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="280" y1="294" x2="360" y2="294" stroke="rgba(255,255,255,0.35)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="280" y1="336" x2="372" y2="336" stroke="rgba(255,255,255,0.25)" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Growth arrow badge (top right) -->
+  <circle cx="388" cy="128" r="76" fill="#FFFFFF" opacity=".98"/>
+  <circle cx="388" cy="128" r="68" fill="#F7F5F0"/>
+  <!-- Arrow up -->
+  <path d="M388 168 L388 96" stroke="#2D5BE3" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <path d="M356 120 L388 90 L420 120" stroke="#2D5BE3" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Small dot at top of arrow -->
+  <circle cx="388" cy="90" r="8" fill="#2D5BE3"/>
+</svg>
