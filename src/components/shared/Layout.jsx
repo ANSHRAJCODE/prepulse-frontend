@@ -1,181 +1,156 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { LogOut, Menu, X, Bell, Sun, Moon, CheckCircle, Briefcase, TrendingUp } from 'lucide-react'
+import { LogOut, User, Moon, Sun, Bell, ChevronRight } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
-import useThemeStore from '../../store/themeStore'
-import toast from 'react-hot-toast'
-import PrepPulseLogo from './Logo'
+import PPLogo from '../PPLogo'
 
-// Mock notifications — in real deployment these come from the API
-function useNotifications() {
-  const { user } = useAuthStore()
-  if (user?.role === 'student') return [
-    { id: 1, icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10', title: 'Application Shortlisted', body: 'TechCorp India shortlisted you for Software Engineer', time: '2h ago', unread: true },
-    { id: 2, icon: Briefcase, color: 'text-indigo-400', bg: 'bg-indigo-500/10', title: 'New Job Posted', body: 'Amazon India posted SDE-1 Backend — 26 LPA', time: '5h ago', unread: true },
-    { id: 3, icon: CheckCircle, color: 'text-blue-400', bg: 'bg-blue-500/10', title: 'Profile Complete', body: 'Your profile is now eligible for all job matches', time: '1d ago', unread: false },
-  ]
-  if (user?.role === 'admin') return [
-    { id: 1, icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10', title: '3 New Applications', body: 'Students applied to Amazon SDE-1 today', time: '1h ago', unread: true },
-    { id: 2, icon: Briefcase, color: 'text-indigo-400', bg: 'bg-indigo-500/10', title: 'New Company Registered', body: 'Wipro Technologies joined the platform', time: '3h ago', unread: true },
-  ]
-  if (user?.role === 'company') return [
-    { id: 1, icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10', title: '5 New Applicants', body: '5 students applied to your job posting today', time: '2h ago', unread: true },
-  ]
-  return []
-}
-
-export default function Layout({ children, navItems }) {
+export default function Layout({ children, navItems = [] }) {
   const { user, logout } = useAuthStore()
-  const { theme, toggleTheme, initTheme } = useThemeStore()
   const navigate = useNavigate()
   const location = useLocation()
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [notifOpen, setNotifOpen] = useState(false)
-  const [readIds, setReadIds] = useState([])
-  const notifRef = useRef(null)
-  const notifications = useNotifications()
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [dark, setDark] = useState(() => document.documentElement.getAttribute('data-theme') === 'dark')
+  const profileRef = useRef(null)
 
-  useEffect(() => { initTheme(theme) }, [])
-
-  // Close notif panel on outside click
+  // Close dropdown on outside click
   useEffect(() => {
-    const handler = (e) => { if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false) }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    const fn = (e) => { if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false) }
+    document.addEventListener('mousedown', fn)
+    return () => document.removeEventListener('mousedown', fn)
   }, [])
 
-  const unreadCount = notifications.filter(n => n.unread && !readIds.includes(n.id)).length
+  const toggleTheme = () => {
+    const next = dark ? 'light' : 'dark'
+    document.documentElement.setAttribute('data-theme', next)
+    localStorage.setItem('pp-theme', next)
+    setDark(!dark)
+  }
 
   const handleLogout = () => {
     logout()
-    toast.success('Signed out successfully')
     navigate('/login')
   }
 
-  const isDark = theme === 'dark'
+  const roleColor = {
+    student: '#2D5BE3',
+    admin: '#1A7A4A',
+    company: '#A05A1A',
+  }[user?.role] || '#2D5BE3'
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--bg-base)' }}>
+    <div style={{
+      display: 'flex', minHeight: '100vh',
+      background: dark ? '#0E0F14' : '#F7F5F0',
+      color: dark ? '#F0EEE8' : '#16150F',
+      fontFamily: "'DM Sans', system-ui, sans-serif",
+      transition: 'background 0.3s, color 0.3s'
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+        [data-theme="light"] { --bg:#F7F5F0;--bg2:#EFECE4;--card:#FFFFFF;--border:#E0DBD0;--text:#16150F;--text2:#5C5848;--text3:#8C8878;--accent:#2D5BE3 }
+        [data-theme="dark"]  { --bg:#0E0F14;--bg2:#141620;--card:#171923;--border:rgba(255,255,255,0.08);--text:#F0EEE8;--text2:#8A8880;--text3:#5A5854;--accent:#5B84F0 }
+        .nav-item { display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:500;color:var(--text2);transition:all .2s;text-decoration:none;cursor:pointer }
+        .nav-item:hover { background:var(--bg2);color:var(--text) }
+        .nav-item.active { background:var(--accent);color:#fff;font-weight:600 }
+        .nav-item.active svg { opacity:1 }
+        .profile-dropdown { position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 -8px 32px rgba(0,0,0,.12);z-index:100;animation:slideUp .2s ease }
+        @keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .dd-item { display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:13.5px;font-weight:500;color:var(--text2);cursor:pointer;transition:background .15s;text-decoration:none }
+        .dd-item:hover { background:var(--bg2);color:var(--text) }
+        .dd-item.danger { color:#C02A2A }
+        .dd-item.danger:hover { background:rgba(192,42,42,.08) }
+        .inner-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px }
+      `}</style>
+
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 sidebar
-        transform transition-transform duration-300 flex flex-col
-        ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-
+      <aside style={{
+        width: 260, flexShrink: 0, display: 'flex', flexDirection: 'column',
+        background: dark ? '#0A0B10' : '#FFFFFF',
+        borderRight: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : '#E0DBD0'}`,
+        padding: '0 16px 16px', position: 'sticky', top: 0, height: '100vh', overflowY: 'auto'
+      }}>
         {/* Logo */}
-        <div className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-          <div className="flex items-center gap-2.5">
-            <PrepPulseLogo size={32} />
-            <div>
-              <span className="font-bold" style={{ color: 'var(--text-primary)' }}>PrepPulse</span>
-            </div>
-          </div>
-        </div>
-
-        {/* User info */}
-        <div className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full gradient-bg flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-              {user?.full_name?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{user?.full_name}</p>
-              <p className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{user?.role}</p>
-            </div>
-          </div>
+        <div style={{ padding: '20px 2px 24px', borderBottom: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : '#E0DBD0'}`, marginBottom: 16 }}>
+          <Link to="/" style={{ display: 'block' }}>
+            <PPLogo size={32} theme={dark ? 'dark' : 'light'} />
+          </Link>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {navItems.map((item) => {
+        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {navItems.map(item => {
             const isActive = location.pathname === item.href
             return (
-              <Link key={item.href} to={item.href} onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
-                  ${isActive
-                    ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30'
-                    : 'hover:bg-[var(--bg-hover)]'}`}
-                style={{ color: isActive ? undefined : 'var(--text-secondary)' }}>
-                <item.icon className="w-4 h-4 flex-shrink-0" />
+              <Link key={item.href} to={item.href} className={`nav-item${isActive ? ' active' : ''}`}>
+                <item.icon size={16} style={{ flexShrink: 0, opacity: isActive ? 1 : 0.6 }} />
                 {item.label}
               </Link>
             )
           })}
         </nav>
 
-        {/* Logout */}
-        <div className="px-3 py-4 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
-          <button onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full transition-all hover:bg-red-500/10 hover:text-red-400"
-            style={{ color: 'var(--text-muted)' }}>
-            <LogOut className="w-4 h-4" />
-            Sign Out
+        {/* Profile trigger — click to show dropdown */}
+        <div ref={profileRef} style={{ position: 'relative', marginTop: 12 }}>
+          {profileOpen && (
+            <div className="profile-dropdown">
+              {/* User info header */}
+              <div style={{ padding: '14px 16px 10px', borderBottom: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : '#E0DBD0'}` }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: dark ? '#F0EEE8' : '#16150F' }}>{user?.full_name}</p>
+                <p style={{ fontSize: 11, color: dark ? '#5A5854' : '#8C8878', marginTop: 2 }}>{user?.email}</p>
+                <span style={{ display: 'inline-block', marginTop: 6, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: roleColor, background: `${roleColor}15`, padding: '2px 8px', borderRadius: 4 }}>{user?.role}</span>
+              </div>
+              {/* Menu items */}
+              <Link to={user?.role === 'student' ? '/student/profile' : '/profile'} className="dd-item" onClick={() => setProfileOpen(false)}>
+                <User size={14} /> My Profile
+              </Link>
+              <div className="dd-item" onClick={toggleTheme}>
+                {dark ? <Sun size={14} /> : <Moon size={14} />}
+                {dark ? 'Light Mode' : 'Dark Mode'}
+              </div>
+              <div style={{ borderTop: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : '#E0DBD0'}`, margin: '4px 0' }} />
+              <div className="dd-item danger" onClick={handleLogout}>
+                <LogOut size={14} /> Sign Out
+              </div>
+            </div>
+          )}
+
+          {/* Avatar button */}
+          <button onClick={() => setProfileOpen(p => !p)} style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 12px', borderRadius: 12, border: `1px solid ${dark ? 'rgba(255,255,255,0.08)' : '#E0DBD0'}`,
+            background: dark ? '#171923' : '#FAFAF8', cursor: 'pointer', transition: 'all .2s'
+          }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: roleColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+              {user?.full_name?.charAt(0)}
+            </div>
+            <div style={{ flex: 1, textAlign: 'left', overflow: 'hidden' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: dark ? '#F0EEE8' : '#16150F', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.full_name}</p>
+              <p style={{ fontSize: 11, color: dark ? '#5A5854' : '#8C8878', textTransform: 'capitalize' }}>{user?.role}</p>
+            </div>
+            <ChevronRight size={14} style={{ color: dark ? '#5A5854' : '#8C8878', transform: profileOpen ? 'rotate(90deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }} />
           </button>
         </div>
       </aside>
 
-      {mobileOpen && <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setMobileOpen(false)} />}
-
-      {/* Main */}
-      <div className="flex-1 lg:ml-64 flex flex-col">
+      {/* Main content */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Top bar */}
-        <header className="sticky top-0 z-20 topbar px-6 py-3.5 flex items-center gap-3">
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden" style={{ color: 'var(--text-secondary)' }}>
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        <header style={{
+          height: 60, display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+          padding: '0 28px', gap: 10,
+          borderBottom: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : '#E0DBD0'}`,
+          background: dark ? '#0A0B10' : '#FFFFFF', position: 'sticky', top: 0, zIndex: 50
+        }}>
+          <button onClick={toggleTheme} style={{ width: 34, height: 34, borderRadius: '50%', border: `1px solid ${dark ? 'rgba(255,255,255,0.1)' : '#E0DBD0'}`, background: 'transparent', color: dark ? '#8A8880' : '#5C5848', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            {dark ? <Sun size={15} /> : <Moon size={15} />}
           </button>
-          <div className="flex-1" />
-
-          {/* Theme toggle */}
-          <button onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-[var(--bg-hover)]"
-            style={{ color: 'var(--text-secondary)' }}
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
-            {isDark
-              ? <Sun className="w-4 h-4 text-yellow-400" />
-              : <Moon className="w-4 h-4 text-indigo-400" />}
+          <button style={{ width: 34, height: 34, borderRadius: '50%', border: `1px solid ${dark ? 'rgba(255,255,255,0.1)' : '#E0DBD0'}`, background: 'transparent', color: dark ? '#8A8880' : '#5C5848', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', position: 'relative' }}>
+            <Bell size={15} />
           </button>
-
-          {/* Notifications */}
-          <div className="relative" ref={notifRef}>
-            <button onClick={() => { setNotifOpen(!notifOpen); setReadIds(notifications.map(n => n.id)) }}
-              className="w-9 h-9 rounded-xl flex items-center justify-center relative transition-all hover:bg-[var(--bg-hover)]"
-              style={{ color: 'var(--text-secondary)' }}>
-              <Bell className="w-4 h-4" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-[var(--bg-base)]" />
-              )}
-            </button>
-
-            {/* Dropdown */}
-            {notifOpen && (
-              <div className="absolute right-0 top-12 w-80 glass-card shadow-2xl overflow-hidden z-50 animate-fade-in">
-                <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-                  <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>Notifications</p>
-                </div>
-                <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-                  {notifications.length === 0
-                    ? <p className="px-4 py-6 text-sm text-center" style={{ color: 'var(--text-muted)' }}>No notifications</p>
-                    : notifications.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-[var(--bg-hover)]">
-                        <div className={`${n.bg} ${n.color} p-2 rounded-lg flex-shrink-0 mt-0.5`}>
-                          <n.icon className="w-3.5 h-3.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{n.title}</p>
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{n.body}</p>
-                          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{n.time}</p>
-                        </div>
-                        {n.unread && !readIds.includes(n.id) && (
-                          <div className="w-2 h-2 bg-indigo-500 rounded-full flex-shrink-0 mt-1.5" />
-                        )}
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
         </header>
 
-        <main className="flex-1 p-6 overflow-auto animate-fade-in">
+        {/* Page content */}
+        <main style={{ flex: 1, padding: '28px', overflowY: 'auto' }}>
           {children}
         </main>
       </div>
