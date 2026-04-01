@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, Brain } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import PPLogo from '../components/PPLogo'
 import toast from 'react-hot-toast'
 import api from '../utils/api'
@@ -23,60 +23,56 @@ export default function LoginPage() {
       navigate(`/${data.role}`)
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Login failed')
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/3 w-64 h-64 bg-brand-600/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/3 w-48 h-48 bg-pulse-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-md animate-slide-up">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <PPLogo size={36} theme="dark" />
+    <div style={{ minHeight:'100vh', background:'#F7F5F0', display:'flex', alignItems:'center', justifyContent:'center', padding:'20px', fontFamily:"'DM Sans',system-ui,sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap');`}</style>
+      <div style={{ width:'100%', maxWidth:420 }}>
+        {/* Logo */}
+        <div style={{ textAlign:'center', marginBottom:32 }}>
+          <Link to="/" style={{ display:'inline-flex', alignItems:'center', gap:10, textDecoration:'none' }}>
+            <PPLogo size={38} theme="light" />
           </Link>
-          <h1 className="text-3xl font-bold text-white">Welcome back</h1>
-          <p className="text-slate-400 mt-2">Sign in to your account</p>
         </div>
+        <h1 style={{ fontFamily:"'Instrument Serif',serif", fontSize:36, fontWeight:400, color:'#16150F', textAlign:'center', marginBottom:6 }}>Welcome back</h1>
+        <p style={{ fontSize:15, color:'#8C8878', textAlign:'center', marginBottom:32 }}>Sign in to your account</p>
 
-        <div className="glass-card p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
-              <input type="email" placeholder="you@college.edu" className="input-field"
-                value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
+        <div style={{ background:'#FFFFFF', border:'1px solid #E0DBD0', borderRadius:18, padding:32, boxShadow:'0 4px 24px rgba(0,0,0,0.06)' }}>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom:18 }}>
+              <label style={{ display:'block', fontSize:13, fontWeight:600, color:'#5C5848', marginBottom:7 }}>Email Address</label>
+              <input type="email" placeholder="you@college.edu" required
+                value={form.email} onChange={e => setForm({...form, email:e.target.value})}
+                style={{ width:'100%', padding:'12px 16px', borderRadius:10, border:'1px solid #E0DBD0', background:'#F7F5F0', fontSize:14, color:'#16150F', outline:'none', fontFamily:'inherit' }} />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
-              <div className="relative">
-                <input type={showPass ? 'text' : 'password'} placeholder="••••••••" className="input-field pr-12"
-                  value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
+            <div style={{ marginBottom:24 }}>
+              <label style={{ display:'block', fontSize:13, fontWeight:600, color:'#5C5848', marginBottom:7 }}>Password</label>
+              <div style={{ position:'relative' }}>
+                <input type={showPass?'text':'password'} placeholder="••••••••" required
+                  value={form.password} onChange={e => setForm({...form, password:e.target.value})}
+                  style={{ width:'100%', padding:'12px 44px 12px 16px', borderRadius:10, border:'1px solid #E0DBD0', background:'#F7F5F0', fontSize:14, color:'#16150F', outline:'none', fontFamily:'inherit' }} />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'#8C8878', cursor:'pointer', display:'flex', alignItems:'center' }}>
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
-            <button type="submit" className="btn-primary w-full justify-center py-3 text-base" disabled={loading}>
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</> : 'Sign In'}
+            <button type="submit" disabled={loading}
+              style={{ width:'100%', padding:'13px', borderRadius:10, border:'none', background:'#2D5BE3', color:'white', fontSize:15, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, fontFamily:'inherit', opacity:loading?0.8:1 }}>
+              {loading ? <><Loader2 size={16} style={{ animation:'spin 1s linear infinite' }} /> Signing in...</> : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-slate-700">
-            <p className="text-xs text-slate-500 mb-3 text-center">Demo Credentials</p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { role: 'Student', email: 'student@demo.com', pass: 'demo123' },
-                { role: 'Admin', email: 'admin@demo.com', pass: 'demo123' },
-                { role: 'Company', email: 'tech@demo.com', pass: 'demo123' },
-              ].map(d => (
-                <button key={d.role} onClick={() => setForm({ email: d.email, password: d.pass })}
-                  className="text-xs py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors border border-slate-700">
+          <div style={{ borderTop:'1px solid #E0DBD0', marginTop:24, paddingTop:20 }}>
+            <p style={{ fontSize:12, color:'#8C8878', textAlign:'center', marginBottom:12 }}>Demo Credentials</p>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
+              {[{role:'Student',email:'student@demo.com'},{role:'Admin',email:'admin@demo.com'},{role:'Company',email:'tech@demo.com'}].map(d => (
+                <button key={d.role} onClick={() => setForm({email:d.email, password:'demo123'})}
+                  style={{ padding:'8px', borderRadius:8, border:'1px solid #E0DBD0', background:'#F7F5F0', fontSize:12, fontWeight:600, color:'#5C5848', cursor:'pointer', fontFamily:'inherit', transition:'all .2s' }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor='#2D5BE3'}
+                  onMouseLeave={e => e.currentTarget.style.borderColor='#E0DBD0'}>
                   {d.role}
                 </button>
               ))}
@@ -84,11 +80,12 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="text-center text-slate-500 mt-6 text-sm">
+        <p style={{ textAlign:'center', fontSize:13, color:'#8C8878', marginTop:20 }}>
           Don't have an account?{' '}
-          <Link to="/register" className="text-brand-400 hover:text-brand-300 font-medium">Register here</Link>
+          <Link to="/register" style={{ color:'#2D5BE3', fontWeight:600, textDecoration:'none' }}>Register here</Link>
         </p>
       </div>
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }
