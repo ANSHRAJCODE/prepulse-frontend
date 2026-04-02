@@ -1,0 +1,63 @@
+================================================================
+  PrepPulse Submission — ZIP File Checklist
+================================================================
+
+ZIP FILENAME: PrepPulse_SE_Lab_2025.zip
+
+CONTENTS REQUIRED:
+------------------
+
+✅ 1. EXECUTABLE SOFTWARE
+   File/Link: https://prepulse-frontend.vercel.app
+   → Include this URL in a file named "executable_link.txt"
+   → Content: "Live App: https://prepulse-frontend.vercel.app"
+
+✅ 2. SCREENSHOTS (folder: screenshots/)
+   Take these 8 screenshots from the live site:
+   01_landing_page.png       — Homepage hero section
+   02_login_page.png         — Login page with logo
+   03_student_dashboard.png  — Student dashboard
+   04_job_listing.png        — Browse jobs page
+   05_job_detail_match.png   — Job detail with match %
+   06_ai_roadmap.png         — AI roadmap (run locally with Ollama)
+   07_admin_dashboard.png    — Placement Command Center
+   08_company_dashboard.png  — Recruiter dashboard with candidates
+
+✅ 3. PREREQUISITES FILE
+   File: prerequisites.txt (already created ✓)
+
+✅ 4. PPT — 10 SLIDES
+   File: PrepPulse_Presentation.pptx
+   Content: Use PPT_content.txt as your guide
+   Add screenshots where indicated
+
+✅ 5. REPOSITORY TEXT FILE
+   File: repository.txt (already created ✓)
+
+✅ 6. 30-SECOND VIDEO
+   File: prepulse_demo.mp4
+   Guide: Use video_script.txt
+   Record using: Win + G → Record
+
+================================================================
+FINAL ZIP STRUCTURE:
+PrepPulse_SE_Lab_2025.zip
+├── executable_link.txt
+├── prerequisites.txt
+├── repository.txt
+├── PrepPulse_Presentation.pptx
+├── prepulse_demo.mp4
+└── screenshots/
+    ├── 01_landing_page.png
+    ├── 02_login_page.png
+    ├── 03_student_dashboard.png
+    ├── 04_job_listing.png
+    ├── 05_job_detail_match.png
+    ├── 06_ai_roadmap.png
+    ├── 07_admin_dashboard.png
+    └── 08_company_dashboard.png
+
+================================================================
+SUBMIT TO: deepak.routfet@kiit.ac.in
+SHARE REPO WITH: deepak.routfet@kiit.ac.in
+================================================================
