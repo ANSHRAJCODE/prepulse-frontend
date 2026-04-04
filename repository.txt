@@ -1,7 +1,5 @@
-================================================================
   PrepPulse — AI-Driven Campus Placement Decision Support System
-  Software Engineering Lab Project | KIIT University | 2025
-================================================================
+  Software Engineering Project | KIIT University | 2026
 
 LIVE DEPLOYMENT (Executable Software)
 --------------------------------------
@@ -32,7 +30,7 @@ Company/Recruiter Login:
   Password: demo123
 
 HOW TO RUN LOCALLY
--------------------
+
 Prerequisites:
   - Python 3.11+
   - Node.js 18+
@@ -61,17 +59,16 @@ Step 4 — Open browser:
   http://localhost:5173
 
 TEAM MEMBERS
--------------
-  Ansh Raj           | Roll: 2330289 | Backend, AI Integration, Deployment
+
+  Ansh Raj           | Roll: 2330289 | Backend, Frontend, Deployment
   Manya Singh        | Roll: 2330311 | Frontend, UI/UX Design
   Preetush Bhowmik   | Roll: 2330175 | Match Engine, Database Design
   Labani Sen         | Roll: 2330309 | Testing, Documentation
 
 TECH STACK
------------
+
   Backend:    FastAPI (Python), SQLAlchemy, PostgreSQL, JWT Auth
   Frontend:   React 18, Vite, TailwindCSS
   AI Engine:  Ollama (Llama 3.2:3b) — runs locally, zero API cost
   Deployment: Render (backend + DB), Vercel (frontend)
 
-================================================================

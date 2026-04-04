@@ -1,15 +1,11 @@
-================================================================
   PrepPulse — Prerequisites & Setup Guide
-================================================================
 
 TO RUN THE LIVE VERSION (No setup needed)
-------------------------------------------
+
 Simply open: https://prepulse-frontend.vercel.app
 Use the demo credentials provided in repository.txt
 
-================================================================
 TO RUN LOCALLY — PREREQUISITES
-================================================================
 
 1. PYTHON 3.11 or higher
    Download: https://www.python.org/downloads/
@@ -32,9 +28,7 @@ TO RUN LOCALLY — PREREQUISITES
    After install, run: ollama pull llama3.2:3b
    Without Ollama, the app shows a template roadmap instead
 
-================================================================
 ENVIRONMENT VARIABLES
-================================================================
 
 Backend (.env file in prepulse-backend/):
   DATABASE_URL=sqlite:///./prepulse.db
@@ -47,11 +41,9 @@ Backend (.env file in prepulse-backend/):
 Frontend (.env file in prepulse-frontend/):
   VITE_API_URL=http://localhost:8000/api
 
-================================================================
-NOTES
-================================================================
+//
 - The live deployed version (Vercel + Render) requires NO setup
 - Render free tier may take 30-50 seconds to wake on first load
 - AI Roadmap works only when Ollama is running locally
 - All other features work fully on the deployed version
-================================================================
+//
