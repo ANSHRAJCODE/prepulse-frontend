@@ -273,7 +273,7 @@ export default function LandingPage() {
               </div>
               <div style={{ padding:22 }}>
                 <p style={{ fontSize:10,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',color:'var(--accent)',marginBottom:4 }}>Student Dashboard</p>
-                <p style={{ fontSize:17,fontWeight:600,color:'var(--text)',marginBottom:18 }}>Welcome back, Ansh 👋</p>
+                <p style={{ fontSize:17,fontWeight:600,color:'var(--text)',marginBottom:18 }}>Welcome back MANYA</p>
                 <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:9,marginBottom:18 }}>
                   {[{l:'CGPA',v:'8.2',c:'var(--accent)'},{l:'Skills',v:'12',c:'#7C3AED'},{l:'Applied',v:'4',c:'var(--green)'}].map(s => (
                     <div key={s.l} style={{ background:'var(--bg)',borderRadius:8,padding:'12px 10px',border:'1px solid var(--border)' }}>
